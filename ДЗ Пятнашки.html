@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="jquery-ui-1.12.1/ui-lightness/jquery-ui-1.10.3.custom.css" rel="stylesheet" />
+    <script src="jquery-ui-1.12.1/external/jquery/jquery.js"></script>
+    <script src="jquery-ui-1.12.1/jquery-ui.min.js"></script>
+    <style>
+        .mainNav {
+            width: 40%;
+            margin-right: auto;
+        }
+
+        #main {
+            width: 305px;
+            height: 305px;
+            position: absolute;
+            background-color: cadetblue;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            border-radius: 5px;
+            border: 3px outset darkcyan;
+        }
+
+        #stone {
+            width: 60px;
+            height: 60px;
+            background-color: azure;
+            border-radius: 5px;
+            border: 3px outset brown;
+            padding: 5px;
+            box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, .9);
+            margin: 0px;
+            font-size: large;
+            font-weight: bold;
+            background-image: url(Food_C240-128.png);
+            background-size: 100% 100%;
+            text-align: center;
+            vertical-align: middle;
+            line-height: 60px;
+            position: relative;
+        }
+        .firstNav {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        button {
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            background-color: brown;
+            border-radius: 5px;
+        }
+        button:hover {
+            box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        }
+        button:active {
+            background-color: darkred;
+            box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.7), 0 6px 20px 0 rgba(0, 0, 0, 0.8);
+            transform: translateY(4px);
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="mainNav">
+
+        <nav class="firstNav">
+            <h4>Timer: 0</h4>
+            <button onclick="StartGame()">Start</button>
+        </nav>
+        <hr>
+        <nav id="main">
+            <div id="stone"></div>
+            <div id="stone"></div>
+            <div id="stone"></div>
+            <div id="stone"></div>
+            <div id="stone"></div>
+            <div id="stone"></div>
+            <div id="stone"></div>
+            <div id="stone"></div>
+            <div id="stone"></div>
+            <div id="stone"></div>
+            <div id="stone"></div>
+            <div id="stone"></div>
+            <div id="stone"></div>
+            <div id="stone"></div>
+            <div id="stone"></div>
+            <div id="stone"></div>
+        </nav>
+        <nav id="dialog2" title="WIN!!!">
+            <p><b>YOU ARE WINNER!</b></p>
+        </nav>
+    </nav>
+
+
+    <script>
+        class Fifteen {
+            constructor() {
+                this.array = [[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 0]];
+                this.size = 4;
+                this.nulli = 3;
+                this.nullj = 3;
+            }
+            MoveRight(indexI, indexJ) {
+                let value;
+                if (indexJ + 1 < this.size) {
+                    value = this.array[indexI][indexJ];
+                    this.array[indexI][indexJ + 1] = value;
+                    this.array[indexI][indexJ] = 0;
+                    this.nulli = indexI;
+                    this.nullj = indexJ;
+                }
+            }
+            MoveLeft(indexI, indexJ) {
+                let value;
+                if (indexJ - 1 < this.size) {
+                    value = this.array[indexI][indexJ];
+                    this.array[indexI][indexJ - 1] = value;
+                    this.array[indexI][indexJ] = 0;
+                    this.nulli = indexI;
+                    this.nullj = indexJ;
+                }
+            }
+            MoveDown(indexI, indexJ) {
+                let value;
+                if (indexI + 1 < this.size) {
+                    value = this.array[indexI][indexJ];
+                    this.array[indexI + 1][indexJ] = value;
+                    this.array[indexI][indexJ] = 0;
+                    this.nulli = indexI;
+                    this.nullj = indexJ;
+                }
+            }
+            MoveUp(indexI, indexJ) {
+                let value;
+                if (indexI - 1 < this.size) {
+                    value = this.array[indexI][indexJ];
+                    this.array[indexI - 1][indexJ] = value;
+                    this.array[indexI][indexJ] = 0;
+                    this.nulli = indexI;
+                    this.nullj = indexJ;
+                }
+            }
+            GetArray(indexI, indexJ) {
+                return this.array[indexI][indexJ];
+            }
+            CheckWin() {
+                let count = 0;
+                for (let i = 0; i < this.size; i++) {
+                    for (let j = 0; j < this.size - 1; j++) {
+                        if (this.array[i][j] + 1 == this.array[i][j + 1] && this.array[3][3] == 0) { count++; }
+                    }
+                }
+                if (count == 11) { return 1; }
+                else { return 0; }
+            }
+            Mix() {
+                let direction = 0;
+                for (let i = 0; i < 100; i++) {
+                    direction = Math.floor(Math.random() * Math.floor(4) + 1);
+                    if (direction == 1 && this.nulli - 1 >= 0) {
+                        this.MoveDown(this.nulli - 1, this.nullj);
+                    }
+                    else if (direction == 2 && this.nullj + 1 < this.size) {
+                        this.MoveLeft(this.nulli, this.nullj + 1);
+                    }
+                    else if (direction == 3 && this.nulli + 1 < this.size) {
+                        this.MoveUp(this.nulli + 1, this.nullj);
+                    }
+                    else if (direction == 4 && this.nullj - 1 >= 0) {
+                        this.MoveRight(this.nulli, this.nullj - 1);
+                    }
+                }
+            }
+            InnerArray() {
+                this.array = [[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12], [13, 14, 15, 0]];
+                this.size = 4;
+                this.nulli = 3;
+                this.nullj = 3;
+            }
+        }
+        let fiftteen = new Fifteen();
+        //fiftteen.Mix();
+        //Draw();
+
+        function Draw() {
+            let countI = 0, countJ = 0;
+            for (let i = 0; i < 16; i++) {
+                if (countJ < 4) {
+                    if (fiftteen.GetArray(countI, countJ) == 0) {
+                        document.getElementsByTagName("div")[i].style.visibility = "hidden";
+                        document.getElementsByTagName("div")[i].innerText = fiftteen.GetArray(countI, countJ);
+                    }
+                    else {
+                        document.getElementsByTagName("div")[i].innerText = fiftteen.GetArray(countI, countJ);
+                        document.getElementsByTagName("div")[i].style.visibility = "visible";
+                    }
+                    countJ++;
+                    if (countJ == 4) {
+                        countJ = 0;
+                        countI++;
+                    }
+                }
+            }
+        }
+
+        function SetCoords(index, nullIndex) {
+            let countI = 0, countJ = 0;
+            for (let i = 0; i < 16; i++) {
+                if (i == index && nullIndex - index == 1) {
+                    fiftteen.MoveRight(countI, countJ);
+                    break;
+                }
+                else if (i == index && nullIndex - index == -1) {
+                    fiftteen.MoveLeft(countI, countJ); break;
+                }
+                else if (i == index && nullIndex - index == 4) {
+                    fiftteen.MoveDown(countI, countJ); break;
+                }
+                else if (i == index && nullIndex - index == -4) {
+                    fiftteen.MoveUp(countI, countJ); break;
+                }
+
+                countJ++;
+                if (countJ == 4) {
+                    countJ = 0;
+                    countI++;
+                }
+            }
+            let array = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
+            for (let i = 0; i < 4; i++) {
+                for (let j = 0; j < 4; j++) {
+                    array[i][j] = fiftteen.GetArray(i, j);
+                }
+            }
+            //alert(array + "  " + fiftteen.CheckWin());
+            if (fiftteen.CheckWin() == 1) {
+                setTimeout(() => { clearInterval(timerId);}, 1000);
+                setTimeout(() => $("#dialog2").dialog("open"), 1500);
+            }
+        }
+
+        let timerId = 0;
+        let seconds = 0;
+        function Timer() {
+            seconds++;
+            document.getElementsByTagName("h4")[0].textContent = `Timer: ${seconds} `;
+        }
+        function StartGame() {
+            fiftteen.InnerArray();
+            fiftteen.Mix();
+            Draw();
+            seconds = -1;
+            timerId=setInterval(Timer, 1000);
+        }
+
+        $(document).ready(function () {
+            $("div").click(function () {
+                if ($(this).next().text() == 0 && $(this).index() != 15 && ($(this).index() + 1) % 4 != 0) {
+                    SetCoords($(this).index(), $(this).next().index());
+                    $(this).animate({ left: '+=76' }, 1000, function () { $(this).next().insertBefore($(this).css("left", "0px")); }); //чтобы написать эту строку у меня ушло 4,5часа
+                    //$(this).next().insertBefore($(this));
+                    // $(this).next().animate({ left: '-=76' }, 2000, function () {});
+
+                    // $(this).animate({ left: '+=76' }, 2000, function (){});
+                    // setTimeout(() => $(this).next().insertBefore($(this)), 2500);
+                    //$(this).animate({ left: '-=76' });
+                    //$(this).next().insertBefore($(this));
+
+                    // $(this).next().insertBefore($(this).animate({left: '+=76'}, 2000));
+
+                    //$(this).insertAfter($(this).next());
+                }
+                else if ($(this).prev().text() == 0 && $(this).index() % 4 != 0) {
+                    SetCoords($(this).index(), $(this).prev().index());
+                    $(this).animate({ left: '-=76' }, 1000, function () { $(this).prev().insertAfter($(this).css("left", "0px")); });
+                }
+                else if ($(this).prev().prev().prev().prev().text() == 0 && $(this).index() > 3) {
+                    SetCoords($(this).index(), $(this).prev().prev().prev().prev().index());
+                    $(this).animate({ top: '-=76' }, 1000, function () { $(this).prev().prev().prev().prev().insertAfter($(this).prev()); $(this).css("top", "0px").insertAfter($(this).prev().prev().prev().prev().prev()) });
+                }
+                else if ($(this).next().next().next().next().text() == 0 && $(this).index() < 12) {
+                    SetCoords($(this).index(), $(this).next().next().next().next().index());
+                    $(this).animate({ bottom: '-=76' }, 1000, function () { $(this).next().next().next().next().insertBefore($(this).next()); $(this).css("bottom", "0px").insertAfter($(this).next().next().next().next()) });
+                }
+            });
+
+            $("#dialog2").dialog({
+                modal: true,
+                autoOpen: false, buttons: {
+                    OK: function () {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
